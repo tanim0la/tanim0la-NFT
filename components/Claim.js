@@ -92,61 +92,69 @@ function Claim(props) {
   }
 
   const onWhitelist = async () => {
-    try {
-      setErrMsg('')
-      setDisabled(true)
-      setButton('Loading.')
+    if (window.ethereum.networkVersion == '4') {
+      try {
+        setErrMsg('')
+        setDisabled(true)
+        setButton('Loading.')
 
-      await contract.joinWl().then((tx) => tx.wait())
-      setButton('Loading..')
-      setWhitelisted(true)
+        await contract.joinWl().then((tx) => tx.wait())
+        setButton('Loading..')
+        setWhitelisted(true)
 
-      let addresses = await contract.getAddresses()
-      if (addresses.length > 0) {
-        const leaves = addresses.map((addy) => keccak256(addy))
-        const tree = new MerkleTree(leaves, keccak256, { sortPairs: true })
-        const root = '0x' + tree.getRoot().toString('hex')
-        const Owner = props.owner
-        const connection = new ethers.providers.JsonRpcProvider(Owner.network)
-        const wallet = new ethers.Wallet(Owner.pkey)
-        const signer = wallet.connect(connection)
-        const owner = new ethers.Contract(
-          '0x563c9633a9888a984CF26F30601E568a02704b36',
-          compiledTani.abi,
-          signer,
-        )
-        setButton('Loading...')
-        await owner.setRoot(root).then((tx) => tx.wait())
+        let addresses = await contract.getAddresses()
+        if (addresses.length > 0) {
+          const leaves = addresses.map((addy) => keccak256(addy))
+          const tree = new MerkleTree(leaves, keccak256, { sortPairs: true })
+          const root = '0x' + tree.getRoot().toString('hex')
+          const Owner = props.owner
+          const connection = new ethers.providers.JsonRpcProvider(Owner.network)
+          const wallet = new ethers.Wallet(Owner.pkey)
+          const signer = wallet.connect(connection)
+          const owner = new ethers.Contract(
+            '0x563c9633a9888a984CF26F30601E568a02704b36',
+            compiledTani.abi,
+            signer,
+          )
+          setButton('Loading...')
+          await owner.setRoot(root).then((tx) => tx.wait())
+        }
+        setButton('Mint NFT')
+        setDisabled(false)
+      } catch (err) {
+        setErrMsg(err.message)
+        setDisabled(false)
+        setWhitelisted(false)
+        setButton('Join WhiteList')
       }
-      setButton('Mint NFT')
-      setDisabled(false)
-    } catch (err) {
-      setErrMsg(err.message)
-      setDisabled(false)
-      setWhitelisted(false)
-      setButton('Join WhiteList')
+    } else {
+      setErrMsg('Change to Rinkeby test network!!!')
     }
   }
 
   const onMint = async () => {
-    try {
-      setErrMsg('')
-      setDisabled(true)
-      setButton('Minting...')
+    if (window.ethereum.networkVersion == '4') {
+      try {
+        setErrMsg('')
+        setDisabled(true)
+        setButton('Minting...')
 
-      let addresses = await contract.getAddresses()
-      const leaves = addresses.map((addy) => keccak256(addy))
-      const tree = new MerkleTree(leaves, keccak256, { sortPairs: true })
-      const buf2hex = (x) => '0x' + x.toString('hex')
-      const leaf = keccak256(address)
-      const proof = tree.getProof(leaf).map((x) => buf2hex(x.data))
+        let addresses = await contract.getAddresses()
+        const leaves = addresses.map((addy) => keccak256(addy))
+        const tree = new MerkleTree(leaves, keccak256, { sortPairs: true })
+        const buf2hex = (x) => '0x' + x.toString('hex')
+        const leaf = keccak256(address)
+        const proof = tree.getProof(leaf).map((x) => buf2hex(x.data))
 
-      await contract.MintNft(proof).then((tx) => tx.wait())
-      setButton('Minted!')
-    } catch (err) {
-      setErrMsg(err.message)
-      setDisabled(false)
-      setButton('Mint NFT')
+        await contract.MintNft(proof).then((tx) => tx.wait())
+        setButton('Minted!')
+      } catch (err) {
+        setErrMsg(err.message)
+        setDisabled(false)
+        setButton('Mint NFT')
+      }
+    } else {
+      setErrMsg('Change to Rinkeby test network!!!')
     }
   }
 
@@ -194,3 +202,4 @@ function Claim(props) {
 }
 
 export default Claim
+
