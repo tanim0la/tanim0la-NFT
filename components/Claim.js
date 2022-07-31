@@ -159,7 +159,7 @@ function Claim(props) {
   }
 
   return (
-    <div className="text-center my-16 sm:px-16">
+    <div className="text-center my-16 sm:px-16 pb-10">
       {whitelisted ? (
         <div className="text-4xl font-extralight pb-5">
           {'['}
