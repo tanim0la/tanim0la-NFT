@@ -14,7 +14,7 @@ function Header() {
         <Image className="" draggable={false} src={img} />
       </div>
       <div className="font-bold text-4xl py-5 sm:text-5xl">tanim0la NFT</div>
-      <div className="font-bold text-center pb-12 sm:px-3">
+      <div className="font-bold text-center pb-20 sm:px-3">
         10,000 collections of tanim0la NFT, vibing on Blockchain. A project
         built for the community, by the community.
       </div>
