@@ -1,6 +1,6 @@
 function Footer() {
   return (
-    <div className="text-center pt-10 px-2">
+    <div className="text-center pt-28 px-2">
       <h1 className="font-semibold sm:text-2xl">
         © 2022 All rights reserved | Built by{' '}
         <a
